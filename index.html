@@ -1,0 +1,1142 @@
+<!doctype html>
+<html lang="es">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Préstamos</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100%;
+            color: #333;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        .navbar {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+        }
+
+        .business-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 2rem;
+        }
+
+        .steps-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            color: #999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .step.active .step-number {
+            background: #667eea;
+            color: white;
+        }
+
+        .step.completed .step-number {
+            background: #4caf50;
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .step.active .step-label {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .btn-success {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #45a049;
+        }
+
+        .step-content {
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-section {
+            display: none;
+            margin-top: 2rem;
+        }
+
+        .result-section.active {
+            display: block;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-item {
+            background: #f5f5f5;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .summary-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+
+        .summary-value {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .payment-schedule {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #555;
+        }
+
+        tr:hover {
+            background: #f9f9f9;
+        }
+
+        .footer {
+            background: white;
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .footer-info {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .social-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .credits {
+            font-size: 0.9rem;
+            color: #666;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 30px;
+            right: 30px;
+            background: #25d366;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            box-shadow: 2px 2px 20px rgba(37, 211, 102, 0.5);
+        }
+
+        .print-section {
+            display: none;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .navbar, .footer, .whatsapp-float, .button-group, .steps-indicator {
+                display: none !important;
+            }
+
+            .container {
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            .card {
+                box-shadow: none;
+                page-break-inside: avoid;
+            }
+
+            .print-section {
+                display: block !important;
+            }
+
+            table {
+                page-break-inside: auto;
+            }
+
+            tr {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
+        }
+
+        .print-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .print-header h1 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .print-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .info-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-box {
+            border: 1px solid #e0e0e0;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .info-box h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-label {
+            color: #666;
+        }
+
+        .info-value {
+            font-weight: 600;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 0 0.5rem;
+            }
+
+            .card {
+                padding: 1rem;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .info-section {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-info {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <nav class="navbar">
+   <div class="logo-section">
+    <svg class="logo" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#667eea" /> <text x="50" y="70" font-size="60" text-anchor="middle" fill="white">
+      💰
+     </text>
+    </svg>
+    <div class="business-name" id="navBusinessName">
+     Mi Financiera
+    </div>
+   </div>
+  </nav>
+  <div class="container">
+   <div class="card">
+    <div class="steps-indicator">
+     <div class="step active" data-step="1">
+      <div class="step-number">
+       1
+      </div>
+      <div class="step-label">
+       Datos del Cliente
+      </div>
+     </div>
+     <div class="step" data-step="2">
+      <div class="step-number">
+       2
+      </div>
+      <div class="step-label">
+       Datos del Préstamo
+      </div>
+     </div>
+     <div class="step" data-step="3">
+      <div class="step-number">
+       3
+      </div>
+      <div class="step-label">
+       Datos del Gestor
+      </div>
+     </div>
+    </div>
+    <div class="step-content active" id="step1">
+     <h2 style="margin-bottom: 1.5rem; color: #667eea;">Paso 1: Datos del Cliente</h2>
+     <div class="form-group"><label for="clientName">Nombre Completo</label> <input type="text" id="clientName" placeholder="Ingrese nombre completo">
+     </div>
+     <div class="form-group"><label for="clientPhone">Teléfono</label> <input type="tel" id="clientPhone" placeholder="+504 0000-0000">
+     </div>
+     <div class="form-group"><label for="clientAddress">Dirección</label> <input type="text" id="clientAddress" placeholder="Ingrese dirección completa">
+     </div>
+     <div class="button-group"><button class="btn btn-primary" onclick="nextStep(2)">Siguiente</button>
+     </div>
+    </div>
+    <div class="step-content" id="step2">
+     <h2 style="margin-bottom: 1.5rem; color: #667eea;">Paso 2: Datos del Préstamo</h2>
+     <div class="form-group"><label for="loanType">Tipo de Préstamo *</label> <select id="loanType" onchange="handleLoanTypeChange()"> <option value="amortizado">Amortizado (Cuotas Niveladas)</option> <option value="abierto">Abierto (Pago Flexible)</option> </select>
+     </div>
+     <div class="form-group"><label for="interestType">Tipo de Interés *</label> <select id="interestType"> <option value="simple">Simple</option> <option value="redescontado">Redescontado</option> </select>
+     </div>
+     <div class="form-group"><label for="rateType">Tipo de Tasa *</label> <select id="rateType"> <option value="diaria">Diaria</option> <option value="semanal">Semanal</option> <option value="quincenal">Quincenal</option> <option value="mensual">Mensual</option> <option value="anual">Anual</option> </select>
+     </div>
+     <div class="form-group"><label for="loanAmount">Monto del Préstamo *</label> <input type="number" id="loanAmount" required placeholder="0.00" step="0.01" min="0">
+     </div>
+     <div class="form-group"><label for="interestRate">Tasa de Interés (%) *</label> <input type="number" id="interestRate" required placeholder="0.00" step="0.01" min="0">
+     </div>
+     <div class="form-group"><label for="downPayment">Prima / Enganche</label> <input type="number" id="downPayment" placeholder="0.00" step="0.01" min="0" value="0">
+     </div>
+     <div class="form-group"><label for="numberOfPayments">Cantidad de Pagos *</label> <input type="number" id="numberOfPayments" required placeholder="12" min="1" step="1">
+     </div>
+     <div class="button-group"><button class="btn btn-secondary" onclick="previousStep(1)">Anterior</button> <button class="btn btn-primary" onclick="nextStep(3)">Siguiente</button>
+     </div>
+    </div>
+    <div class="step-content" id="step3">
+     <h2 style="margin-bottom: 1.5rem; color: #667eea;">Paso 3: Datos del Gestor</h2>
+     <div class="form-group"><label for="managerName">Nombre del Gestor</label> <input type="text" id="managerName" placeholder="Ingrese nombre del gestor">
+     </div>
+     <div class="form-group"><label for="managerPhone">Teléfono del Gestor</label> <input type="tel" id="managerPhone" placeholder="+504 0000-0000">
+     </div>
+     <div class="button-group"><button class="btn btn-secondary" onclick="previousStep(2)">Anterior</button> <button class="btn btn-success" onclick="calculateLoan()">Calcular Préstamo</button>
+     </div>
+    </div>
+   </div>
+   <div class="result-section" id="resultSection">
+    <div class="card">
+     <div class="print-section print-header">
+      <h1 id="printBusinessName">Mi Financiera</h1>
+      <div class="print-date" id="printDate"></div>
+     </div>
+     <h2 style="margin-bottom: 1.5rem; color: #667eea;">Resumen del Préstamo</h2>
+     <div class="info-section">
+      <div class="info-box">
+       <h3>Información del Cliente</h3>
+       <div class="info-row"><span class="info-label">Nombre:</span> <span class="info-value" id="resultClientName"></span>
+       </div>
+       <div class="info-row"><span class="info-label">Teléfono:</span> <span class="info-value" id="resultClientPhone"></span>
+       </div>
+       <div class="info-row"><span class="info-label">Dirección:</span> <span class="info-value" id="resultClientAddress"></span>
+       </div>
+      </div>
+      <div class="info-box">
+       <h3>Información del Gestor</h3>
+       <div class="info-row"><span class="info-label">Nombre:</span> <span class="info-value" id="resultManagerName"></span>
+       </div>
+       <div class="info-row"><span class="info-label">Teléfono:</span> <span class="info-value" id="resultManagerPhone"></span>
+       </div>
+      </div>
+     </div>
+     <div class="summary-grid">
+      <div class="summary-item">
+       <div class="summary-label">
+        Tipo de Préstamo
+       </div>
+       <div class="summary-value" id="resultLoanType"></div>
+      </div>
+      <div class="summary-item">
+       <div class="summary-label">
+        Monto Solicitado
+       </div>
+       <div class="summary-value" id="resultLoanAmount"></div>
+      </div>
+      <div class="summary-item">
+       <div class="summary-label">
+        Prima
+       </div>
+       <div class="summary-value" id="resultDownPayment"></div>
+      </div>
+      <div class="summary-item">
+       <div class="summary-label">
+        Monto a Financiar
+       </div>
+       <div class="summary-value" id="resultFinancedAmount"></div>
+      </div>
+      <div class="summary-item">
+       <div class="summary-label">
+        Tasa de Interés
+       </div>
+       <div class="summary-value" id="resultInterestRate"></div>
+      </div>
+      <div class="summary-item">
+       <div class="summary-label">
+        Total de Intereses
+       </div>
+       <div class="summary-value" id="resultTotalInterest"></div>
+      </div>
+      <div class="summary-item">
+       <div class="summary-label">
+        Total a Pagar
+       </div>
+       <div class="summary-value" id="resultTotalAmount"></div>
+      </div>
+      <div class="summary-item" id="monthlyPaymentItem">
+       <div class="summary-label">
+        Cuota
+       </div>
+       <div class="summary-value" id="resultMonthlyPayment"></div>
+      </div>
+     </div>
+     <h3 style="margin-top: 2rem; margin-bottom: 1rem; color: #667eea;">Plan de Pagos Proyectado</h3>
+     <div class="payment-schedule">
+      <table id="paymentTable">
+       <thead>
+        <tr>
+         <th>No.</th>
+         <th>Fecha</th>
+         <th>Saldo Inicial</th>
+         <th>Cuota</th>
+         <th>Capital</th>
+         <th>Interés</th>
+         <th>Saldo Final</th>
+        </tr>
+       </thead>
+       <tbody id="paymentTableBody">
+       </tbody>
+      </table>
+     </div>
+     <div class="button-group"><button class="btn btn-secondary" onclick="resetCalculator()">Nuevo Cálculo</button> <button class="btn btn-primary" onclick="window.print()">Imprimir Reporte</button>
+     </div>
+    </div>
+   </div>
+  </div>
+  <footer class="footer">
+   <div class="footer-content">
+    <div class="footer-info">
+     <div class="footer-item"><span>📞</span> <span id="footerPhone">+504 0000-0000</span>
+     </div>
+     <div class="footer-item"><span>📧</span> <span id="footerEmail">contacto@negocio.com</span>
+     </div>
+     <div class="footer-item"><span>📍</span> <span id="footerAddress">Dirección del negocio</span>
+     </div>
+    </div>
+    <div class="social-links" id="socialLinks"></div>
+    <div class="credits">
+     Desarrollado por <strong>Rimed Digital</strong><br>
+      📧 gerencia@rimeddigital.com | 📞 +504 9359-3126
+    </div>
+   </div>
+  </footer><a href="#" class="whatsapp-float" id="whatsappFloat" target="_blank" rel="noopener noreferrer"> <span>💬</span> </a>
+  <script>
+        const defaultConfig = {
+            business_name: "Mi Financiera",
+            business_phone: "+504 0000-0000",
+            business_email: "contacto@negocio.com",
+            business_address: "Dirección del negocio",
+            whatsapp_number: "+50400000000",
+            facebook_url: "",
+            instagram_url: "",
+            twitter_url: ""
+        };
+
+        let currentStep = 1;
+        let loanData = {};
+
+        function updateUI(config) {
+            const businessName = config.business_name || defaultConfig.business_name;
+            const businessPhone = config.business_phone || defaultConfig.business_phone;
+            const businessEmail = config.business_email || defaultConfig.business_email;
+            const businessAddress = config.business_address || defaultConfig.business_address;
+            const whatsappNumber = config.whatsapp_number || defaultConfig.whatsapp_number;
+            const facebookUrl = config.facebook_url || defaultConfig.facebook_url;
+            const instagramUrl = config.instagram_url || defaultConfig.instagram_url;
+            const twitterUrl = config.twitter_url || defaultConfig.twitter_url;
+
+            document.getElementById('navBusinessName').textContent = businessName;
+            document.getElementById('printBusinessName').textContent = businessName;
+            document.getElementById('footerPhone').textContent = businessPhone;
+            document.getElementById('footerEmail').textContent = businessEmail;
+            document.getElementById('footerAddress').textContent = businessAddress;
+
+            const whatsappFloat = document.getElementById('whatsappFloat');
+            if (whatsappNumber && whatsappNumber.trim() !== '') {
+                whatsappFloat.href = `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}`;
+                whatsappFloat.classList.remove('hidden');
+            } else {
+                whatsappFloat.classList.add('hidden');
+            }
+
+            const socialLinksContainer = document.getElementById('socialLinks');
+            socialLinksContainer.innerHTML = '';
+
+            if (facebookUrl && facebookUrl.trim() !== '') {
+                const fbLink = document.createElement('a');
+                fbLink.href = facebookUrl;
+                fbLink.className = 'social-link';
+                fbLink.target = '_blank';
+                fbLink.rel = 'noopener noreferrer';
+                fbLink.innerHTML = '<span>📘</span>';
+                socialLinksContainer.appendChild(fbLink);
+            }
+
+            if (instagramUrl && instagramUrl.trim() !== '') {
+                const igLink = document.createElement('a');
+                igLink.href = instagramUrl;
+                igLink.className = 'social-link';
+                igLink.target = '_blank';
+                igLink.rel = 'noopener noreferrer';
+                igLink.innerHTML = '<span>📷</span>';
+                socialLinksContainer.appendChild(igLink);
+            }
+
+            if (twitterUrl && twitterUrl.trim() !== '') {
+                const twLink = document.createElement('a');
+                twLink.href = twitterUrl;
+                twLink.className = 'social-link';
+                twLink.target = '_blank';
+                twLink.rel = 'noopener noreferrer';
+                twLink.innerHTML = '<span>🐦</span>';
+                socialLinksContainer.appendChild(twLink);
+            }
+        }
+
+        function nextStep(step) {
+            if (step === 3 && !validateStep2()) {
+                showNotification('Por favor complete todos los campos requeridos del préstamo');
+                return;
+            }
+
+            document.querySelectorAll('.step-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`step${step}`).classList.add('active');
+
+            document.querySelectorAll('.step').forEach(stepEl => {
+                const stepNum = parseInt(stepEl.dataset.step);
+                stepEl.classList.remove('active');
+                if (stepNum < step) {
+                    stepEl.classList.add('completed');
+                } else if (stepNum === step) {
+                    stepEl.classList.add('active');
+                } else {
+                    stepEl.classList.remove('completed');
+                }
+            });
+
+            currentStep = step;
+        }
+
+        function previousStep(step) {
+            nextStep(step);
+        }
+
+        function validateStep2() {
+            const amount = parseFloat(document.getElementById('loanAmount').value);
+            const rate = parseFloat(document.getElementById('interestRate').value);
+            const payments = parseInt(document.getElementById('numberOfPayments').value);
+            return amount > 0 && rate > 0 && payments > 0;
+        }
+
+        function handleLoanTypeChange() {
+            const loanType = document.getElementById('loanType').value;
+            const monthlyPaymentItem = document.getElementById('monthlyPaymentItem');
+            
+            if (loanType === 'abierto') {
+                monthlyPaymentItem.style.display = 'none';
+            } else {
+                monthlyPaymentItem.style.display = 'block';
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #ff5252;
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                z-index: 1000;
+                animation: slideIn 0.3s;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        function calculateLoan() {
+            if (!validateStep2()) {
+                showNotification('Por favor complete todos los campos requeridos del préstamo');
+                return;
+            }
+
+            const loanType = document.getElementById('loanType').value;
+            const interestType = document.getElementById('interestType').value;
+            const rateType = document.getElementById('rateType').value;
+            const loanAmount = parseFloat(document.getElementById('loanAmount').value);
+            const interestRate = parseFloat(document.getElementById('interestRate').value);
+            const downPayment = parseFloat(document.getElementById('downPayment').value) || 0;
+            const numberOfPayments = parseInt(document.getElementById('numberOfPayments').value);
+
+            const financedAmount = loanAmount - downPayment;
+
+            let paymentSchedule = [];
+            let totalInterest = 0;
+            let totalAmount = 0;
+            let monthlyPayment = 0;
+
+            if (loanType === 'amortizado') {
+                const result = calculateAmortized(financedAmount, interestRate, numberOfPayments, rateType, interestType);
+                paymentSchedule = result.schedule;
+                totalInterest = result.totalInterest;
+                totalAmount = result.totalAmount;
+                monthlyPayment = result.monthlyPayment;
+            } else {
+                const result = calculateOpen(financedAmount, interestRate, numberOfPayments, rateType, interestType);
+                paymentSchedule = result.schedule;
+                totalInterest = result.totalInterest;
+                totalAmount = result.totalAmount;
+            }
+
+            displayResults(loanType, loanAmount, downPayment, financedAmount, interestRate, rateType, interestType, totalInterest, totalAmount, monthlyPayment, paymentSchedule);
+
+            document.getElementById('resultSection').classList.add('active');
+            document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function calculateAmortized(principal, rate, payments, rateType, interestType) {
+            // Si la tasa es anual, se divide entre 12 para obtener la tasa mensual
+            let periodRate = rate / 100;
+            if (rateType === 'anual') {
+                periodRate = periodRate / 12;
+            }
+
+            let monthlyPayment;
+            let totalInterest;
+            let schedule = [];
+
+            // INTERÉS SIMPLE: Cuando el usuario selecciona "simple"
+            if (interestType === 'simple') {
+                // Interés Simple: Capital × Tasa × Tiempo
+                // Total a pagar = Capital + Interés Total
+                // Cuota = Total a pagar / Cantidad de pagos
+                totalInterest = principal * periodRate * payments;
+                const totalAmount = principal + totalInterest;
+                monthlyPayment = totalAmount / payments;
+                
+                let balance = principal;
+                const principalPayment = principal / payments;
+                const interestPayment = totalInterest / payments;
+
+                for (let i = 1; i <= payments; i++) {
+                    const startBalance = balance;
+                    balance -= principalPayment;
+
+                    schedule.push({
+                        number: i,
+                        date: getPaymentDate(i, rateType),
+                        startBalance: startBalance,
+                        payment: monthlyPayment,
+                        principal: principalPayment,
+                        interest: interestPayment,
+                        endBalance: Math.max(0, balance)
+                    });
+                }
+            } 
+            // INTERÉS REDESCONTADO: Cuando el usuario selecciona "redescontado"
+            else {
+                // Interés Redescontado: Cada pago incluye interés sobre saldo restante + amortización de capital
+                // Fórmula de cuota fija: P = (Principal * r) / (1 - (1 + r)^-n)
+                if (periodRate === 0) {
+                    monthlyPayment = principal / payments;
+                } else {
+                    monthlyPayment = (principal * periodRate) / (1 - Math.pow(1 + periodRate, -payments));
+                }
+                
+                let balance = principal;
+                totalInterest = 0;
+
+                for (let i = 1; i <= payments; i++) {
+                    const interestPayment = balance * periodRate;
+                    const principalPayment = monthlyPayment - interestPayment;
+                    const startBalance = balance;
+                    balance -= principalPayment;
+                    totalInterest += interestPayment;
+
+                    schedule.push({
+                        number: i,
+                        date: getPaymentDate(i, rateType),
+                        startBalance: startBalance,
+                        payment: monthlyPayment,
+                        principal: principalPayment,
+                        interest: interestPayment,
+                        endBalance: Math.max(0, balance)
+                    });
+                }
+            }
+
+            const totalAmount = principal + totalInterest;
+
+            return { schedule, totalInterest, totalAmount, monthlyPayment };
+        }
+
+        function calculateOpen(principal, rate, payments, rateType, interestType) {
+            // Si la tasa es anual, se divide entre 12 para obtener la tasa mensual
+            let periodRate = rate / 100;
+            if (rateType === 'anual') {
+                periodRate = periodRate / 12;
+            }
+
+            let schedule = [];
+            let totalInterest = 0;
+            let balance = principal;
+
+            // INTERÉS SIMPLE: Cuando el usuario selecciona "simple"
+            if (interestType === 'simple') {
+                // Interés Simple: Capital × Tasa × Tiempo
+                // Se paga el interés prorrateado en cada período y el capital al final
+                totalInterest = principal * periodRate * payments;
+                const interestPerPayment = totalInterest / payments;
+
+                for (let i = 1; i <= payments; i++) {
+                    // Si es el último pago, se incluye el principal
+                    if (i === payments) {
+                        schedule.push({
+                            number: i,
+                            date: getPaymentDate(i, rateType),
+                            startBalance: principal,
+                            payment: interestPerPayment + principal,
+                            principal: principal,
+                            interest: interestPerPayment,
+                            endBalance: 0
+                        });
+                    } else {
+                        schedule.push({
+                            number: i,
+                            date: getPaymentDate(i, rateType),
+                            startBalance: principal,
+                            payment: interestPerPayment,
+                            principal: 0,
+                            interest: interestPerPayment,
+                            endBalance: principal
+                        });
+                    }
+                }
+            } 
+            // INTERÉS REDESCONTADO: Cuando el usuario selecciona "redescontado"
+            else {
+                // Préstamo Abierto con Interés Redescontado: Solo se pagan intereses en cada período
+                // El capital se paga completo al final
+                for (let i = 1; i <= payments; i++) {
+                    const interestPayment = principal * periodRate; // Interés siempre sobre el principal completo
+                    const startBalance = principal;
+                    totalInterest += interestPayment;
+
+                    // Si es el último pago, se incluye el principal
+                    if (i === payments) {
+                        schedule.push({
+                            number: i,
+                            date: getPaymentDate(i, rateType),
+                            startBalance: startBalance,
+                            payment: interestPayment + principal,
+                            principal: principal,
+                            interest: interestPayment,
+                            endBalance: 0
+                        });
+                    } else {
+                        schedule.push({
+                            number: i,
+                            date: getPaymentDate(i, rateType),
+                            startBalance: startBalance,
+                            payment: interestPayment,
+                            principal: 0,
+                            interest: interestPayment,
+                            endBalance: principal
+                        });
+                    }
+                }
+            }
+
+            const totalAmount = principal + totalInterest;
+
+            return { schedule, totalInterest, totalAmount };
+        }
+
+        function getPaymentDate(paymentNumber, rateType) {
+            const today = new Date();
+            let date = new Date(today);
+
+            switch(rateType) {
+                case 'diaria':
+                    date.setDate(today.getDate() + paymentNumber);
+                    break;
+                case 'semanal':
+                    date.setDate(today.getDate() + (paymentNumber * 7));
+                    break;
+                case 'quincenal':
+                    date.setDate(today.getDate() + (paymentNumber * 15));
+                    break;
+                case 'mensual':
+                case 'anual':
+                    // Tanto mensual como anual usan pagos mensuales
+                    date.setMonth(today.getMonth() + paymentNumber);
+                    break;
+            }
+
+            return date.toLocaleDateString('es-HN', { year: 'numeric', month: '2-digit', day: '2-digit' });
+        }
+
+        function displayResults(loanType, loanAmount, downPayment, financedAmount, interestRate, rateType, interestType, totalInterest, totalAmount, monthlyPayment, paymentSchedule) {
+            const clientName = document.getElementById('clientName').value.trim() || 'No especificado';
+            const clientPhone = document.getElementById('clientPhone').value.trim() || 'No especificado';
+            const clientAddress = document.getElementById('clientAddress').value.trim() || 'No especificado';
+            const managerName = document.getElementById('managerName').value.trim() || 'No especificado';
+            const managerPhone = document.getElementById('managerPhone').value.trim() || 'No especificado';
+
+            document.getElementById('resultClientName').textContent = clientName;
+            document.getElementById('resultClientPhone').textContent = clientPhone;
+            document.getElementById('resultClientAddress').textContent = clientAddress;
+            document.getElementById('resultManagerName').textContent = managerName;
+            document.getElementById('resultManagerPhone').textContent = managerPhone;
+
+            const loanTypeText = loanType === 'amortizado' ? 'Amortizado' : 'Abierto';
+            const rateTypeText = {
+                'diaria': 'Diaria',
+                'semanal': 'Semanal',
+                'quincenal': 'Quincenal',
+                'mensual': 'Mensual',
+                'anual': 'Anual'
+            }[rateType];
+            const interestTypeText = interestType === 'simple' ? 'Simple' : 'Redescontado';
+
+            document.getElementById('resultLoanType').textContent = `${loanTypeText} - ${interestTypeText}`;
+            document.getElementById('resultLoanAmount').textContent = formatCurrency(loanAmount);
+            document.getElementById('resultDownPayment').textContent = formatCurrency(downPayment);
+            document.getElementById('resultFinancedAmount').textContent = formatCurrency(financedAmount);
+            document.getElementById('resultInterestRate').textContent = `${interestRate}% ${rateTypeText}`;
+            document.getElementById('resultTotalInterest').textContent = formatCurrency(totalInterest);
+            document.getElementById('resultTotalAmount').textContent = formatCurrency(totalAmount);
+            
+            if (loanType === 'amortizado') {
+                document.getElementById('resultMonthlyPayment').textContent = formatCurrency(monthlyPayment);
+            }
+
+            const tbody = document.getElementById('paymentTableBody');
+            tbody.innerHTML = '';
+
+            paymentSchedule.forEach(payment => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${payment.number}</td>
+                    <td>${payment.date}</td>
+                    <td>${formatCurrency(payment.startBalance)}</td>
+                    <td>${formatCurrency(payment.payment)}</td>
+                    <td>${formatCurrency(payment.principal)}</td>
+                    <td>${formatCurrency(payment.interest)}</td>
+                    <td>${formatCurrency(payment.endBalance)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            const printDate = new Date().toLocaleDateString('es-HN', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            document.getElementById('printDate').textContent = `Generado: ${printDate}`;
+        }
+
+        function formatCurrency(amount) {
+            return `L ${amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
+        }
+
+        function resetCalculator() {
+            document.getElementById('clientName').value = '';
+            document.getElementById('clientPhone').value = '';
+            document.getElementById('clientAddress').value = '';
+            document.getElementById('loanAmount').value = '';
+            document.getElementById('interestRate').value = '';
+            document.getElementById('downPayment').value = '0';
+            document.getElementById('numberOfPayments').value = '';
+            document.getElementById('managerName').value = '';
+            document.getElementById('managerPhone').value = '';
+
+            document.getElementById('resultSection').classList.remove('active');
+            
+            nextStep(1);
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig: defaultConfig,
+                onConfigChange: async (config) => {
+                    updateUI(config);
+                },
+                mapToCapabilities: (config) => ({
+                    recolorables: [],
+                    borderables: [],
+                    fontEditable: undefined,
+                    fontSizeable: undefined
+                }),
+                mapToEditPanelValues: (config) => new Map([
+                    ["business_name", config.business_name || defaultConfig.business_name],
+                    ["business_phone", config.business_phone || defaultConfig.business_phone],
+                    ["business_email", config.business_email || defaultConfig.business_email],
+                    ["business_address", config.business_address || defaultConfig.business_address],
+                    ["whatsapp_number", config.whatsapp_number || defaultConfig.whatsapp_number],
+                    ["facebook_url", config.facebook_url || defaultConfig.facebook_url],
+                    ["instagram_url", config.instagram_url || defaultConfig.instagram_url],
+                    ["twitter_url", config.twitter_url || defaultConfig.twitter_url]
+                ])
+            });
+        }
+
+        updateUI(defaultConfig);
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a0cbacce68f31c5',t:'MTc2MzUyNDA4Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
