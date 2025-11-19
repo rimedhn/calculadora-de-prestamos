@@ -1851,13 +1851,13 @@
                 document.getElementById('clientPhoneRow').style.display = clientPhone ? 'flex' : 'none';
                 document.getElementById('clientAddressRow').style.display = clientAddress ? 'flex' : 'none';
                 
-                document.getElementById('resultClientName').textContent = clientName || 'No especificado';
-                document.getElementById('resultClientPhone').textContent = clientPhone || 'No especificado';
-                document.getElementById('resultClientAddress').textContent = clientAddress || 'No especificado';
+                document.getElementById('resultClientName').textContent = clientName;
+                document.getElementById('resultClientPhone').textContent = clientPhone;
+                document.getElementById('resultClientAddress').textContent = clientAddress;
                 
-                document.getElementById('resultClientNameTable').textContent = clientName || 'No especificado';
-                document.getElementById('resultClientPhoneTable').textContent = clientPhone || 'No especificado';
-                document.getElementById('resultClientAddressTable').textContent = clientAddress || 'No especificado';
+                document.getElementById('resultClientNameTable').textContent = clientName;
+                document.getElementById('resultClientPhoneTable').textContent = clientPhone;
+                document.getElementById('resultClientAddressTable').textContent = clientAddress;
             } else {
                 clientInfoBox.style.display = 'none';
             }
@@ -1873,21 +1873,25 @@
                 document.getElementById('managerNameRow').style.display = managerName ? 'flex' : 'none';
                 document.getElementById('managerPhoneRow').style.display = managerPhone ? 'flex' : 'none';
                 
-                document.getElementById('resultManagerName').textContent = managerName || 'No especificado';
-                document.getElementById('resultManagerPhone').textContent = managerPhone || 'No especificado';
+                document.getElementById('resultManagerName').textContent = managerName;
+                document.getElementById('resultManagerPhone').textContent = managerPhone;
                 
-                document.getElementById('resultManagerNameTable').textContent = managerName || 'No especificado';
-                document.getElementById('resultManagerPhoneTable').textContent = managerPhone || 'No especificado';
+                document.getElementById('resultManagerNameTable').textContent = managerName;
+                document.getElementById('resultManagerPhoneTable').textContent = managerPhone;
             } else {
                 managerInfoBox.style.display = 'none';
             }
 
             // Ocultar toda la sección info-section si no hay datos de cliente ni gestor
             const infoSection = document.getElementById('infoSection');
+            const infoTable = document.querySelector('.info-table');
+            
             if (!hasClientInfo && !hasManagerInfo) {
                 infoSection.style.display = 'none';
+                infoTable.style.display = 'none';
             } else {
                 infoSection.style.display = 'grid';
+                infoTable.style.display = 'table';
             }
 
             const loanTypeText = loanType === 'amortizado' ? 'Amortizado' : 'Abierto';
@@ -2013,5 +2017,5 @@
 
         updateUI(defaultConfig);
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a0dfd69a62131c5',t:'MTc2MzUzNzI5Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a0e0900746a31c5',t:'MTc2MzUzNzc3MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
