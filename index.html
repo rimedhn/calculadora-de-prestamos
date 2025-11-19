@@ -340,7 +340,46 @@
             box-shadow: 2px 2px 20px rgba(37, 211, 102, 0.5);
         }
 
+        .print-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 100px;
+            right: 30px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .print-float:hover {
+            transform: scale(1.1);
+            box-shadow: 2px 2px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .print-float.active {
+            display: flex;
+        }
+
         .print-section {
+            display: none;
+        }
+
+        .summary-table {
+            display: none;
+        }
+
+        .info-table {
             display: none;
         }
 
@@ -349,7 +388,7 @@
                 background: white;
             }
 
-            .navbar, .footer, .whatsapp-float, .button-group, .steps-indicator {
+            .navbar, .footer, .whatsapp-float, .button-group, .steps-indicator, .card:not(.card:has(#resultSection)) {
                 display: none !important;
             }
 
@@ -384,47 +423,53 @@
             }
 
             h2, h3 {
-                font-size: 1.1rem;
-                margin-bottom: 0.5rem !important;
+                font-size: 1rem;
+                margin-bottom: 0.3rem !important;
                 margin-top: 0.5rem !important;
             }
 
             .info-section {
-                gap: 0.5rem;
-                margin-bottom: 1rem;
-            }
-
-            .info-box {
-                padding: 0.5rem;
-            }
-
-            .info-box h3 {
-                font-size: 0.95rem;
+                display: block !important;
                 margin-bottom: 0.5rem;
-                padding-bottom: 0.25rem;
             }
 
-            .info-row {
-                margin-bottom: 0.25rem;
-                font-size: 0.85rem;
+            .info-table {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+
+            .info-table td {
+                padding: 0.3rem;
+                font-size: 0.8rem;
+                border: 1px solid #e0e0e0;
+            }
+
+            .info-table .label-cell {
+                font-weight: 600;
+                background: #f5f5f5;
+                width: 25%;
             }
 
             .summary-grid {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 0.5rem;
-                margin-bottom: 1rem;
+                display: none !important;
             }
 
-            .summary-item {
-                padding: 0.5rem;
+            .summary-table {
+                display: table !important;
+                width: 100%;
+                margin-bottom: 0.5rem;
             }
 
-            .summary-label {
-                font-size: 0.75rem;
+            .summary-table td {
+                padding: 0.3rem;
+                font-size: 0.8rem;
+                border: 1px solid #e0e0e0;
             }
 
-            .summary-value {
-                font-size: 0.95rem;
+            .summary-table .label-cell {
+                font-weight: 600;
+                background: #f5f5f5;
+                width: 25%;
             }
 
             table {
@@ -639,6 +684,26 @@
        </div>
       </div>
      </div>
+     <table class="info-table">
+      <tbody>
+       <tr>
+        <td class="label-cell">Cliente</td>
+        <td id="resultClientNameTable"></td>
+        <td class="label-cell">Gestor</td>
+        <td id="resultManagerNameTable"></td>
+       </tr>
+       <tr>
+        <td class="label-cell">Teléfono Cliente</td>
+        <td id="resultClientPhoneTable"></td>
+        <td class="label-cell">Teléfono Gestor</td>
+        <td id="resultManagerPhoneTable"></td>
+       </tr>
+       <tr>
+        <td class="label-cell">Dirección</td>
+        <td colspan="3" id="resultClientAddressTable"></td>
+       </tr>
+      </tbody>
+     </table>
      <div class="summary-grid">
       <div class="summary-item">
        <div class="summary-label">
@@ -689,6 +754,34 @@
        <div class="summary-value" id="resultMonthlyPayment"></div>
       </div>
      </div>
+     <table class="summary-table">
+      <tbody>
+       <tr>
+        <td class="label-cell">Tipo de Préstamo</td>
+        <td id="resultLoanTypeTable"></td>
+        <td class="label-cell">Monto Solicitado</td>
+        <td id="resultLoanAmountTable"></td>
+       </tr>
+       <tr>
+        <td class="label-cell">Prima</td>
+        <td id="resultDownPaymentTable"></td>
+        <td class="label-cell">Monto a Financiar</td>
+        <td id="resultFinancedAmountTable"></td>
+       </tr>
+       <tr>
+        <td class="label-cell">Tasa de Interés</td>
+        <td id="resultInterestRateTable"></td>
+        <td class="label-cell" id="monthlyPaymentLabelTable">Cuota</td>
+        <td id="resultMonthlyPaymentTable"></td>
+       </tr>
+       <tr>
+        <td class="label-cell">Total de Intereses</td>
+        <td id="resultTotalInterestTable"></td>
+        <td class="label-cell">Total a Pagar</td>
+        <td id="resultTotalAmountTable"></td>
+       </tr>
+      </tbody>
+     </table>
      <h3 style="margin-top: 2rem; margin-bottom: 1rem; color: #667eea;">Plan de Pagos Proyectado</h3>
      <div class="payment-schedule">
       <table id="paymentTable">
@@ -728,7 +821,7 @@
       📧 gerencia@rimeddigital.com | 📞 +504 9359-3126
     </div>
    </div>
-  </footer><a href="#" class="whatsapp-float" id="whatsappFloat" target="_blank" rel="noopener noreferrer">
+  </footer><button class="print-float" id="printFloat" onclick="window.print()"> 🖨️ </button> <a href="#" class="whatsapp-float" id="whatsappFloat" target="_blank" rel="noopener noreferrer">
    <svg viewbox="0 0 32 32" width="32" height="32" fill="white"><path d="M16 0c-8.837 0-16 7.163-16 16 0 2.825 0.737 5.607 2.137 8.048l-2.137 7.952 7.933-2.127c2.42 1.37 5.173 2.127 8.067 2.127 8.837 0 16-7.163 16-16s-7.163-16-16-16zM16 29.467c-2.482 0-4.908-0.646-7.07-1.87l-0.507-0.292-5.247 1.408 1.408-5.227-0.323-0.53c-1.33-2.166-2.028-4.671-2.028-7.256 0-7.636 6.213-13.85 13.85-13.85s13.85 6.213 13.85 13.85c0 7.636-6.213 13.85-13.85 13.85zM23.401 19.892c-0.398-0.201-2.348-1.158-2.713-1.291-0.365-0.133-0.63-0.199-0.896 0.199s-1.029 1.291-1.261 1.557c-0.232 0.265-0.464 0.298-0.862 0.097-0.398-0.199-1.68-0.619-3.199-1.976-1.182-1.054-1.981-2.356-2.213-2.754s-0.025-0.613 0.175-0.812c0.179-0.179 0.398-0.464 0.597-0.696 0.199-0.232 0.265-0.398 0.398-0.663 0.133-0.265 0.066-0.497-0.033-0.696s-0.896-2.159-1.228-2.956c-0.323-0.776-0.652-0.671-0.896-0.684-0.232-0.012-0.497-0.015-0.762-0.015s-0.696 0.099-1.061 0.497c-0.365 0.398-1.394 1.361-1.394 3.319s1.427 3.852 1.627 4.117c0.199 0.265 2.807 4.283 6.802 6.008 0.95 0.411 1.691 0.656 2.269 0.839 0.955 0.303 1.824 0.26 2.512 0.158 0.766-0.115 2.348-0.96 2.679-1.887s0.331-1.723 0.232-1.887c-0.099-0.165-0.365-0.265-0.762-0.464z" />
    </svg></a>
   <script>
@@ -1110,6 +1203,12 @@
             document.getElementById('resultManagerName').textContent = managerName;
             document.getElementById('resultManagerPhone').textContent = managerPhone;
 
+            document.getElementById('resultClientNameTable').textContent = clientName;
+            document.getElementById('resultClientPhoneTable').textContent = clientPhone;
+            document.getElementById('resultClientAddressTable').textContent = clientAddress;
+            document.getElementById('resultManagerNameTable').textContent = managerName;
+            document.getElementById('resultManagerPhoneTable').textContent = managerPhone;
+
             const loanTypeText = loanType === 'amortizado' ? 'Amortizado' : 'Abierto';
             const rateTypeText = {
                 'diaria': 'Diaria',
@@ -1120,16 +1219,33 @@
             }[rateType];
             const interestTypeText = interestType === 'simple' ? 'Simple' : 'Redescontado';
 
-            document.getElementById('resultLoanType').textContent = `${loanTypeText} - ${interestTypeText}`;
+            const fullLoanType = `${loanTypeText} - ${interestTypeText}`;
+            const fullInterestRate = `${interestRate}% ${rateTypeText}`;
+
+            document.getElementById('resultLoanType').textContent = fullLoanType;
             document.getElementById('resultLoanAmount').textContent = formatCurrency(loanAmount);
             document.getElementById('resultDownPayment').textContent = formatCurrency(downPayment);
             document.getElementById('resultFinancedAmount').textContent = formatCurrency(financedAmount);
-            document.getElementById('resultInterestRate').textContent = `${interestRate}% ${rateTypeText}`;
+            document.getElementById('resultInterestRate').textContent = fullInterestRate;
             document.getElementById('resultTotalInterest').textContent = formatCurrency(totalInterest);
             document.getElementById('resultTotalAmount').textContent = formatCurrency(totalAmount);
+
+            document.getElementById('resultLoanTypeTable').textContent = fullLoanType;
+            document.getElementById('resultLoanAmountTable').textContent = formatCurrency(loanAmount);
+            document.getElementById('resultDownPaymentTable').textContent = formatCurrency(downPayment);
+            document.getElementById('resultFinancedAmountTable').textContent = formatCurrency(financedAmount);
+            document.getElementById('resultInterestRateTable').textContent = fullInterestRate;
+            document.getElementById('resultTotalInterestTable').textContent = formatCurrency(totalInterest);
+            document.getElementById('resultTotalAmountTable').textContent = formatCurrency(totalAmount);
             
             if (loanType === 'amortizado') {
                 document.getElementById('resultMonthlyPayment').textContent = formatCurrency(monthlyPayment);
+                document.getElementById('resultMonthlyPaymentTable').textContent = formatCurrency(monthlyPayment);
+                document.getElementById('monthlyPaymentLabelTable').style.display = '';
+                document.getElementById('resultMonthlyPaymentTable').style.display = '';
+            } else {
+                document.getElementById('monthlyPaymentLabelTable').style.display = 'none';
+                document.getElementById('resultMonthlyPaymentTable').style.display = 'none';
             }
 
             const tbody = document.getElementById('paymentTableBody');
@@ -1157,6 +1273,8 @@
                 minute: '2-digit'
             });
             document.getElementById('printDate').textContent = `Generado: ${printDate}`;
+
+            document.getElementById('printFloat').classList.add('active');
         }
 
         function formatCurrency(amount) {
@@ -1175,6 +1293,7 @@
             document.getElementById('managerPhone').value = '';
 
             document.getElementById('resultSection').classList.remove('active');
+            document.getElementById('printFloat').classList.remove('active');
             
             nextStep(1);
 
@@ -1208,5 +1327,5 @@
 
         updateUI(defaultConfig);
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a0ce605705431c5',t:'MTc2MzUyNTg1My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a0d3755360a31c5',t:'MTc2MzUyOTE4My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
