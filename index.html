@@ -487,7 +487,7 @@
             .info-table td {
                 padding: 0.5rem;
                 font-size: 0.9rem;
-                border: 1px solid #ddd;
+                border: none;
             }
 
             .info-table .label-cell {
@@ -518,7 +518,7 @@
             .summary-table td {
                 padding: 0.5rem;
                 font-size: 0.9rem;
-                border: 1px solid #ddd;
+                border: none;
             }
 
             .summary-table .label-cell {
@@ -1949,10 +1949,42 @@
                 if (clientInfoTablePrint) {
                     if (hasClientInfo) {
                         clientInfoTablePrint.classList.remove('print-hide');
-                        // Ocultar filas individuales según datos
-                        document.getElementById('clientNameRowTable').style.display = clientName ? 'table-row' : 'none';
-                        document.getElementById('clientPhoneRowTable').style.display = clientPhone ? 'table-row' : 'none';
-                        document.getElementById('clientAddressRowTable').style.display = clientAddress ? 'table-row' : 'none';
+                        // Ocultar filas individuales según datos Y según configuración
+                        const clientNameRowTable = document.getElementById('clientNameRowTable');
+                        const clientPhoneRowTable = document.getElementById('clientPhoneRowTable');
+                        const clientAddressRowTable = document.getElementById('clientAddressRowTable');
+                        
+                        if (clientName && printConfig.show_client_name) {
+                            clientNameRowTable.style.display = 'table-row';
+                            clientNameRowTable.classList.remove('print-hide');
+                        } else {
+                            clientNameRowTable.style.display = 'none';
+                            clientNameRowTable.classList.add('print-hide');
+                        }
+                        
+                        if (clientPhone && printConfig.show_client_phone) {
+                            clientPhoneRowTable.style.display = 'table-row';
+                            clientPhoneRowTable.classList.remove('print-hide');
+                        } else {
+                            clientPhoneRowTable.style.display = 'none';
+                            clientPhoneRowTable.classList.add('print-hide');
+                        }
+                        
+                        if (clientAddress && printConfig.show_client_address) {
+                            clientAddressRowTable.style.display = 'table-row';
+                            clientAddressRowTable.classList.remove('print-hide');
+                        } else {
+                            clientAddressRowTable.style.display = 'none';
+                            clientAddressRowTable.classList.add('print-hide');
+                        }
+                        
+                        // Verificar si todas las filas están ocultas
+                        const allClientRowsHidden = (!clientName || !printConfig.show_client_name) &&
+                                                   (!clientPhone || !printConfig.show_client_phone) &&
+                                                   (!clientAddress || !printConfig.show_client_address);
+                        if (allClientRowsHidden) {
+                            clientInfoTablePrint.classList.add('print-hide');
+                        }
                     } else {
                         clientInfoTablePrint.classList.add('print-hide');
                     }
@@ -1962,9 +1994,32 @@
                 if (managerInfoTablePrint) {
                     if (hasManagerInfo) {
                         managerInfoTablePrint.classList.remove('print-hide');
-                        // Ocultar filas individuales según datos
-                        document.getElementById('managerNameRowTable').style.display = managerName ? 'table-row' : 'none';
-                        document.getElementById('managerPhoneRowTable').style.display = managerPhone ? 'table-row' : 'none';
+                        // Ocultar filas individuales según datos Y según configuración
+                        const managerNameRowTable = document.getElementById('managerNameRowTable');
+                        const managerPhoneRowTable = document.getElementById('managerPhoneRowTable');
+                        
+                        if (managerName && printConfig.show_manager_name) {
+                            managerNameRowTable.style.display = 'table-row';
+                            managerNameRowTable.classList.remove('print-hide');
+                        } else {
+                            managerNameRowTable.style.display = 'none';
+                            managerNameRowTable.classList.add('print-hide');
+                        }
+                        
+                        if (managerPhone && printConfig.show_manager_phone) {
+                            managerPhoneRowTable.style.display = 'table-row';
+                            managerPhoneRowTable.classList.remove('print-hide');
+                        } else {
+                            managerPhoneRowTable.style.display = 'none';
+                            managerPhoneRowTable.classList.add('print-hide');
+                        }
+                        
+                        // Verificar si todas las filas están ocultas
+                        const allManagerRowsHidden = (!managerName || !printConfig.show_manager_name) &&
+                                                     (!managerPhone || !printConfig.show_manager_phone);
+                        if (allManagerRowsHidden) {
+                            managerInfoTablePrint.classList.add('print-hide');
+                        }
                     } else {
                         managerInfoTablePrint.classList.add('print-hide');
                     }
@@ -2105,5 +2160,5 @@
 
         updateUI(defaultConfig);
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a0e23a7c72b31c5',t:'MTc2MzUzODg2NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a0e3033e46e31c5',t:'MTc2MzUzOTM3Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
