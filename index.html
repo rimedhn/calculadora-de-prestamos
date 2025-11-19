@@ -384,6 +384,10 @@
             display: none;
         }
 
+        .print-hide {
+            display: none !important;
+        }
+
         @media print {
             body {
                 background: white !important;
@@ -425,6 +429,10 @@
 
             .print-section {
                 display: block !important;
+            }
+
+            .print-hide {
+                display: none !important;
             }
 
             .print-header {
@@ -621,10 +629,118 @@
             color: #666;
         }
 
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 700px;
+            width: 90%;
+            max-height: 80%;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .modal-header h2 {
+            color: #667eea;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .config-section {
+            margin-bottom: 2rem;
+        }
+
+        .config-section h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 5px;
+            transition: background 0.2s;
+        }
+
+        .checkbox-item:hover {
+            background: #f5f5f5;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            cursor: pointer;
+            margin: 0;
+            font-weight: 500;
+        }
+
         @media print {
             .signature-section {
                 page-break-inside: avoid;
                 margin-top: 2rem;
+            }
+
+            .modal-overlay {
+                display: none !important;
             }
         }
 
@@ -699,6 +815,8 @@
     </div>
     <div class="step-content active" id="step1">
      <h2 style="margin-bottom: 1.5rem; color: #667eea;">Paso 1: Datos del Cliente</h2>
+     <div style="margin-bottom: 1.5rem;"><button class="btn btn-secondary" onclick="openPrintSettings()" style="width: 100%;"> ⚙️ Configurar Reporte PDF </button>
+     </div>
      <div class="form-group"><label for="clientName">Nombre Completo</label> <input type="text" id="clientName" placeholder="Ingrese nombre completo">
      </div>
      <div class="form-group"><label for="clientPhone">Teléfono</label> <input type="tel" id="clientPhone" placeholder="+504 0000-0000">
@@ -739,9 +857,13 @@
    </div>
    <div class="result-section" id="resultSection">
     <div class="card">
-     <div class="print-section print-header">
-      <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 0.5rem;"><img src="https://github.com/rimedhn/calculadora-de-prestamos/blob/main/Logo%20Demo%20Finan.png?raw=true" alt="Logo del Negocio" style="width: 50px; height: 50px; object-fit: contain;" onerror="this.style.display='none';">
+     <div class="print-section print-header" id="printHeaderSection">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 0.5rem;"><img id="printLogo" src="https://github.com/rimedhn/calculadora-de-prestamos/blob/main/Logo%20Demo%20Finan.png?raw=true" alt="Logo del Negocio" style="width: 50px; height: 50px; object-fit: contain;" onerror="this.style.display='none';">
        <h1 id="printBusinessName" style="margin: 0;">Nombre del Negocio</h1>
+      </div>
+      <div style="text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 0.5rem;">
+       <div id="printBusinessAddress"></div>
+       <div id="printBusinessContact"></div>
       </div>
       <div class="print-date" id="printDate"></div>
      </div>
@@ -785,43 +907,43 @@
       </tbody>
      </table>
      <div class="summary-grid">
-      <div class="summary-item">
+      <div class="summary-item" id="summaryLoanType">
        <div class="summary-label">
         Tipo de Préstamo
        </div>
        <div class="summary-value" id="resultLoanType"></div>
       </div>
-      <div class="summary-item">
+      <div class="summary-item" id="summaryLoanAmount">
        <div class="summary-label">
         Monto Solicitado
        </div>
        <div class="summary-value" id="resultLoanAmount"></div>
       </div>
-      <div class="summary-item">
+      <div class="summary-item" id="summaryDownPayment">
        <div class="summary-label">
         Prima
        </div>
        <div class="summary-value" id="resultDownPayment"></div>
       </div>
-      <div class="summary-item">
+      <div class="summary-item" id="summaryFinancedAmount">
        <div class="summary-label">
         Monto a Financiar
        </div>
        <div class="summary-value" id="resultFinancedAmount"></div>
       </div>
-      <div class="summary-item">
+      <div class="summary-item" id="summaryInterestRate">
        <div class="summary-label">
         Tasa de Interés
        </div>
        <div class="summary-value" id="resultInterestRate"></div>
       </div>
-      <div class="summary-item">
+      <div class="summary-item" id="summaryTotalInterest">
        <div class="summary-label">
         Total de Intereses
        </div>
        <div class="summary-value" id="resultTotalInterest"></div>
       </div>
-      <div class="summary-item">
+      <div class="summary-item" id="summaryTotalAmount">
        <div class="summary-label">
         Total a Pagar
        </div>
@@ -897,7 +1019,7 @@
   <footer class="footer">
    <div class="footer-content">
     <div class="footer-info">
-     <div class="footer-item"><span>📞</span> <span id="footerPhone">9359-3126</span>
+     <div class="footer-item"><span>��</span> <span id="footerPhone">9359-3126</span>
      </div>
      <div class="footer-item"><span>📧</span> <span id="footerEmail">correodelnegocio@correo.com</span>
      </div>
@@ -912,7 +1034,81 @@
    </div>
   </footer><button class="print-float" id="printFloat" onclick="window.print()"> 🖨️ </button> <a href="#" class="whatsapp-float" id="whatsappFloat" target="_blank" rel="noopener noreferrer">
    <svg viewbox="0 0 32 32" width="32" height="32" fill="white"><path d="M16 0c-8.837 0-16 7.163-16 16 0 2.825 0.737 5.607 2.137 8.048l-2.137 7.952 7.933-2.127c2.42 1.37 5.173 2.127 8.067 2.127 8.837 0 16-7.163 16-16s-7.163-16-16-16zM16 29.467c-2.482 0-4.908-0.646-7.07-1.87l-0.507-0.292-5.247 1.408 1.408-5.227-0.323-0.53c-1.33-2.166-2.028-4.671-2.028-7.256 0-7.636 6.213-13.85 13.85-13.85s13.85 6.213 13.85 13.85c0 7.636-6.213 13.85-13.85 13.85zM23.401 19.892c-0.398-0.201-2.348-1.158-2.713-1.291-0.365-0.133-0.63-0.199-0.896 0.199s-1.029 1.291-1.261 1.557c-0.232 0.265-0.464 0.298-0.862 0.097-0.398-0.199-1.68-0.619-3.199-1.976-1.182-1.054-1.981-2.356-2.213-2.754s-0.025-0.613 0.175-0.812c0.179-0.179 0.398-0.464 0.597-0.696 0.199-0.232 0.265-0.398 0.398-0.663 0.133-0.265 0.066-0.497-0.033-0.696s-0.896-2.159-1.228-2.956c-0.323-0.776-0.652-0.671-0.896-0.684-0.232-0.012-0.497-0.015-0.762-0.015s-0.696 0.099-1.061 0.497c-0.365 0.398-1.394 1.361-1.394 3.319s1.427 3.852 1.627 4.117c0.199 0.265 2.807 4.283 6.802 6.008 0.95 0.411 1.691 0.656 2.269 0.839 0.955 0.303 1.824 0.26 2.512 0.158 0.766-0.115 2.348-0.96 2.679-1.887s0.331-1.723 0.232-1.887c-0.099-0.165-0.365-0.265-0.762-0.464z" />
-   </svg></a>
+   </svg></a> <!-- Modal de Configuración -->
+  <div class="modal-overlay" id="printSettingsModal">
+   <div class="modal-content">
+    <div class="modal-header">
+     <h2>⚙️ Configuración del Reporte PDF</h2><button class="close-btn" onclick="closePrintSettings()">×</button>
+    </div>
+    <div class="config-section">
+     <h3>📋 Información del Negocio</h3>
+     <div class="checkbox-group">
+      <div class="checkbox-item"><input type="checkbox" id="check_logo" onchange="updatePrintConfig('show_logo', this.checked)"> <label for="check_logo">Mostrar Logo</label>
+      </div>
+      <div class="checkbox-item"><input type="checkbox" id="check_business_name" onchange="updatePrintConfig('show_business_name', this.checked)"> <label for="check_business_name">Mostrar Nombre del Negocio</label>
+      </div>
+      <div class="checkbox-item"><input type="checkbox" id="check_business_address" onchange="updatePrintConfig('show_business_address', this.checked)"> <label for="check_business_address">Mostrar Dirección</label>
+      </div>
+      <div class="checkbox-item"><input type="checkbox" id="check_business_phone" onchange="updatePrintConfig('show_business_phone', this.checked)"> <label for="check_business_phone">Mostrar Teléfono</label>
+      </div>
+      <div class="checkbox-item"><input type="checkbox" id="check_business_email" onchange="updatePrintConfig('show_business_email', this.checked)"> <label for="check_business_email">Mostrar Email</label>
+      </div>
+     </div>
+    </div>
+    <div class="config-section">
+     <h3>👤 Información del Cliente</h3>
+     <div class="checkbox-group">
+      <div class="checkbox-item"><input type="checkbox" id="check_client_name" onchange="updatePrintConfig('show_client_name', this.checked)"> <label for="check_client_name">Mostrar Nombre</label>
+      </div>
+      <div class="checkbox-item"><input type="checkbox" id="check_client_phone" onchange="updatePrintConfig('show_client_phone', this.checked)"> <label for="check_client_phone">Mostrar Teléfono</label>
+      </div>
+      <div class="checkbox-item"><input type="checkbox" id="check_client_address" onchange="updatePrintConfig('show_client_address', this.checked)"> <label for="check_client_address">Mostrar Dirección</label>
+      </div>
+     </div>
+    </div>
+    <div class="config-section">
+     <h3>🧑‍💼 Información del Gestor</h3>
+     <div class="checkbox-group">
+      <div class="checkbox-item"><input type="checkbox" id="check_manager_name" onchange="updatePrintConfig('show_manager_name', this.checked)"> <label for="check_manager_name">Mostrar Nombre</label>
+      </div>
+      <div class="checkbox-item"><input type="checkbox" id="check_manager_phone" onchange="updatePrintConfig('show_manager_phone', this.checked)"> <label for="check_manager_phone">Mostrar Teléfono</label>
+      </div>
+     </div>
+    </div>
+    <div class="config-section">
+     <h3>💰 Datos del Préstamo</h3>
+     <div class="checkbox-group">
+      <div class="checkbox-item"><input type="checkbox" id="check_loan_type" onchange="updatePrintConfig('show_loan_type', this.checked)"> <label for="check_loan_type">Tipo de Préstamo</label>
+      </div>
+      <div class="checkbox-item"><input type="checkbox" id="check_loan_amount" onchange="updatePrintConfig('show_loan_amount', this.checked)"> <label for="check_loan_amount">Monto Solicitado</label>
+      </div>
+      <div class="checkbox-item"><input type="checkbox" id="check_down_payment" onchange="updatePrintConfig('show_down_payment', this.checked)"> <label for="check_down_payment">Prima/Enganche</label>
+      </div>
+      <div class="checkbox-item"><input type="checkbox" id="check_financed_amount" onchange="updatePrintConfig('show_financed_amount', this.checked)"> <label for="check_financed_amount">Monto a Financiar</label>
+      </div>
+      <div class="checkbox-item"><input type="checkbox" id="check_interest_rate" onchange="updatePrintConfig('show_interest_rate', this.checked)"> <label for="check_interest_rate">Tasa de Interés</label>
+      </div>
+      <div class="checkbox-item"><input type="checkbox" id="check_monthly_payment" onchange="updatePrintConfig('show_monthly_payment', this.checked)"> <label for="check_monthly_payment">Cuota Mensual</label>
+      </div>
+      <div class="checkbox-item"><input type="checkbox" id="check_total_interest" onchange="updatePrintConfig('show_total_interest', this.checked)"> <label for="check_total_interest">Total de Intereses</label>
+      </div>
+      <div class="checkbox-item"><input type="checkbox" id="check_total_amount" onchange="updatePrintConfig('show_total_amount', this.checked)"> <label for="check_total_amount">Total a Pagar</label>
+      </div>
+     </div>
+    </div>
+    <div class="config-section">
+     <h3>📊 Tabla y Firma</h3>
+     <div class="checkbox-group">
+      <div class="checkbox-item"><input type="checkbox" id="check_payment_schedule" onchange="updatePrintConfig('show_payment_schedule', this.checked)"> <label for="check_payment_schedule">Tabla de Amortización</label>
+      </div>
+      <div class="checkbox-item"><input type="checkbox" id="check_signature" onchange="updatePrintConfig('show_signature', this.checked)"> <label for="check_signature">Sección de Firma</label>
+      </div>
+     </div>
+    </div>
+    <div class="button-group"><button class="btn btn-success" onclick="closePrintSettings()">Guardar Configuración</button>
+    </div>
+   </div>
+  </div>
   <script>
         const defaultConfig = {
             business_name: "Nombre del Negocio",
@@ -925,8 +1121,271 @@
             twitter_url: ""
         };
 
+        // Configuración de visualización (qué mostrar en el PDF)
+        let printConfig = {
+            show_logo: true,
+            show_business_name: true,
+            show_business_address: true,
+            show_business_phone: true,
+            show_business_email: true,
+            show_client_name: true,
+            show_client_phone: true,
+            show_client_address: true,
+            show_manager_name: true,
+            show_manager_phone: true,
+            show_loan_type: true,
+            show_loan_amount: true,
+            show_down_payment: true,
+            show_financed_amount: true,
+            show_interest_rate: true,
+            show_monthly_payment: true,
+            show_total_interest: true,
+            show_total_amount: true,
+            show_payment_schedule: true,
+            show_signature: true
+        };
+
+        // Cargar configuración guardada
+        function loadPrintConfig() {
+            const saved = localStorage.getItem('printConfig');
+            if (saved) {
+                printConfig = { ...printConfig, ...JSON.parse(saved) };
+            }
+        }
+
+        // Guardar configuración
+        function savePrintConfig() {
+            localStorage.setItem('printConfig', JSON.stringify(printConfig));
+        }
+
+        loadPrintConfig();
+
         let currentStep = 1;
         let loanData = {};
+
+        // Funciones del modal
+        function openPrintSettings() {
+            loadCheckboxStates();
+            document.getElementById('printSettingsModal').classList.add('active');
+        }
+
+        function closePrintSettings() {
+            document.getElementById('printSettingsModal').classList.remove('active');
+        }
+
+        // Cerrar modal al hacer clic en el overlay
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('printSettingsModal');
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closePrintSettings();
+                }
+            });
+        });
+
+        function updatePrintConfig(key, value) {
+            printConfig[key] = value;
+            savePrintConfig();
+            applyPrintConfig();
+        }
+
+        function loadCheckboxStates() {
+            document.getElementById('check_logo').checked = printConfig.show_logo;
+            document.getElementById('check_business_name').checked = printConfig.show_business_name;
+            document.getElementById('check_business_address').checked = printConfig.show_business_address;
+            document.getElementById('check_business_phone').checked = printConfig.show_business_phone;
+            document.getElementById('check_business_email').checked = printConfig.show_business_email;
+            document.getElementById('check_client_name').checked = printConfig.show_client_name;
+            document.getElementById('check_client_phone').checked = printConfig.show_client_phone;
+            document.getElementById('check_client_address').checked = printConfig.show_client_address;
+            document.getElementById('check_manager_name').checked = printConfig.show_manager_name;
+            document.getElementById('check_manager_phone').checked = printConfig.show_manager_phone;
+            document.getElementById('check_loan_type').checked = printConfig.show_loan_type;
+            document.getElementById('check_loan_amount').checked = printConfig.show_loan_amount;
+            document.getElementById('check_down_payment').checked = printConfig.show_down_payment;
+            document.getElementById('check_financed_amount').checked = printConfig.show_financed_amount;
+            document.getElementById('check_interest_rate').checked = printConfig.show_interest_rate;
+            document.getElementById('check_monthly_payment').checked = printConfig.show_monthly_payment;
+            document.getElementById('check_total_interest').checked = printConfig.show_total_interest;
+            document.getElementById('check_total_amount').checked = printConfig.show_total_amount;
+            document.getElementById('check_payment_schedule').checked = printConfig.show_payment_schedule;
+            document.getElementById('check_signature').checked = printConfig.show_signature;
+        }
+
+        function applyPrintConfig() {
+            // Función auxiliar para aplicar clase print-hide
+            function togglePrintVisibility(elementId, shouldShow) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    if (shouldShow) {
+                        element.classList.remove('print-hide');
+                    } else {
+                        element.classList.add('print-hide');
+                    }
+                }
+            }
+
+            // Encabezado del negocio
+            togglePrintVisibility('printHeaderSection', printConfig.show_logo || printConfig.show_business_name || 
+                printConfig.show_business_address || printConfig.show_business_phone || printConfig.show_business_email);
+            togglePrintVisibility('printLogo', printConfig.show_logo);
+            togglePrintVisibility('printBusinessName', printConfig.show_business_name);
+            togglePrintVisibility('printBusinessAddress', printConfig.show_business_address);
+            togglePrintVisibility('printBusinessContact', printConfig.show_business_phone || printConfig.show_business_email);
+
+            // Información del cliente
+            const clientInfoBox = document.querySelector('.info-section .info-box:first-child');
+            if (clientInfoBox) {
+                if (!printConfig.show_client_name && !printConfig.show_client_phone && !printConfig.show_client_address) {
+                    clientInfoBox.classList.add('print-hide');
+                } else {
+                    clientInfoBox.classList.remove('print-hide');
+                }
+            }
+
+            // Información del gestor
+            const managerInfoBox = document.querySelector('.info-section .info-box:last-child');
+            if (managerInfoBox) {
+                if (!printConfig.show_manager_name && !printConfig.show_manager_phone) {
+                    managerInfoBox.classList.add('print-hide');
+                } else {
+                    managerInfoBox.classList.remove('print-hide');
+                }
+            }
+
+            // Tabla de pagos
+            const paymentScheduleSection = document.querySelector('.payment-schedule');
+            if (paymentScheduleSection && paymentScheduleSection.parentElement) {
+                const scheduleTitle = paymentScheduleSection.previousElementSibling;
+                if (printConfig.show_payment_schedule) {
+                    paymentScheduleSection.classList.remove('print-hide');
+                    if (scheduleTitle && scheduleTitle.tagName === 'H3') {
+                        scheduleTitle.classList.remove('print-hide');
+                    }
+                } else {
+                    paymentScheduleSection.classList.add('print-hide');
+                    if (scheduleTitle && scheduleTitle.tagName === 'H3') {
+                        scheduleTitle.classList.add('print-hide');
+                    }
+                }
+            }
+
+            // Sección de firma
+            const signatureSection = document.querySelector('.signature-section');
+            if (signatureSection) {
+                if (printConfig.show_signature) {
+                    signatureSection.classList.remove('print-hide');
+                } else {
+                    signatureSection.classList.add('print-hide');
+                }
+            }
+
+            // Datos individuales del préstamo (summary-grid)
+            togglePrintVisibility('summaryLoanType', printConfig.show_loan_type);
+            togglePrintVisibility('summaryLoanAmount', printConfig.show_loan_amount);
+            togglePrintVisibility('summaryDownPayment', printConfig.show_down_payment);
+            togglePrintVisibility('summaryFinancedAmount', printConfig.show_financed_amount);
+            togglePrintVisibility('summaryInterestRate', printConfig.show_interest_rate);
+            togglePrintVisibility('summaryTotalInterest', printConfig.show_total_interest);
+            togglePrintVisibility('summaryTotalAmount', printConfig.show_total_amount);
+            togglePrintVisibility('monthlyPaymentItem', printConfig.show_monthly_payment);
+
+            // Aplicar a las filas individuales de la info-table (para impresión)
+            applyInfoTableVisibility();
+
+            // Aplicar a las filas individuales de la summary-table (para impresión)
+            applySummaryTableVisibility();
+        }
+
+        function applyInfoTableVisibility() {
+            const infoTable = document.querySelector('.info-table');
+            if (!infoTable) return;
+
+            const rows = infoTable.querySelectorAll('tr');
+            if (rows.length >= 3) {
+                // Primera fila: Cliente y Gestor
+                const firstRow = rows[0];
+                const clientNameCell = firstRow.cells[0];
+                const clientNameValueCell = firstRow.cells[1];
+                const managerNameCell = firstRow.cells[2];
+                const managerNameValueCell = firstRow.cells[3];
+
+                if (!printConfig.show_client_name) {
+                    clientNameCell.classList.add('print-hide');
+                    clientNameValueCell.classList.add('print-hide');
+                } else {
+                    clientNameCell.classList.remove('print-hide');
+                    clientNameValueCell.classList.remove('print-hide');
+                }
+
+                if (!printConfig.show_manager_name) {
+                    managerNameCell.classList.add('print-hide');
+                    managerNameValueCell.classList.add('print-hide');
+                } else {
+                    managerNameCell.classList.remove('print-hide');
+                    managerNameValueCell.classList.remove('print-hide');
+                }
+
+                // Segunda fila: Teléfonos
+                const secondRow = rows[1];
+                if (!printConfig.show_client_phone && !printConfig.show_manager_phone) {
+                    secondRow.classList.add('print-hide');
+                } else {
+                    secondRow.classList.remove('print-hide');
+                }
+
+                // Tercera fila: Dirección
+                const thirdRow = rows[2];
+                if (!printConfig.show_client_address) {
+                    thirdRow.classList.add('print-hide');
+                } else {
+                    thirdRow.classList.remove('print-hide');
+                }
+            }
+        }
+
+        function applySummaryTableVisibility() {
+            const summaryTable = document.querySelector('.summary-table');
+            if (!summaryTable) return;
+
+            const rows = summaryTable.querySelectorAll('tr');
+            
+            // Primera fila: Tipo y Monto Solicitado
+            if (rows[0]) {
+                if (!printConfig.show_loan_type && !printConfig.show_loan_amount) {
+                    rows[0].classList.add('print-hide');
+                } else {
+                    rows[0].classList.remove('print-hide');
+                }
+            }
+
+            // Segunda fila: Prima y Monto a Financiar
+            if (rows[1]) {
+                if (!printConfig.show_down_payment && !printConfig.show_financed_amount) {
+                    rows[1].classList.add('print-hide');
+                } else {
+                    rows[1].classList.remove('print-hide');
+                }
+            }
+
+            // Tercera fila: Tasa de Interés y Cuota
+            if (rows[2]) {
+                if (!printConfig.show_interest_rate && !printConfig.show_monthly_payment) {
+                    rows[2].classList.add('print-hide');
+                } else {
+                    rows[2].classList.remove('print-hide');
+                }
+            }
+
+            // Cuarta fila: Total de Intereses y Total a Pagar
+            if (rows[3]) {
+                if (!printConfig.show_total_interest && !printConfig.show_total_amount) {
+                    rows[3].classList.add('print-hide');
+                } else {
+                    rows[3].classList.remove('print-hide');
+                }
+            }
+        }
 
         function updateUI(config) {
             const businessName = config.business_name || defaultConfig.business_name;
@@ -943,6 +1402,14 @@
             document.getElementById('footerPhone').textContent = businessPhone;
             document.getElementById('footerEmail').textContent = businessEmail;
             document.getElementById('footerAddress').textContent = businessAddress;
+
+            // Actualizar encabezado de impresión
+            document.getElementById('printBusinessAddress').textContent = businessAddress;
+            
+            let contactInfo = [];
+            if (businessPhone) contactInfo.push(`📞 ${businessPhone}`);
+            if (businessEmail) contactInfo.push(`📧 ${businessEmail}`);
+            document.getElementById('printBusinessContact').textContent = contactInfo.join(' | ');
 
             const whatsappFloat = document.getElementById('whatsappFloat');
             if (whatsappNumber && whatsappNumber.trim() !== '') {
@@ -1366,6 +1833,9 @@
             document.getElementById('signatureName').textContent = clientName;
 
             document.getElementById('printFloat').classList.add('active');
+
+            // Aplicar configuración de visibilidad
+            applyPrintConfig();
         }
 
         function formatCurrency(amount) {
@@ -1418,5 +1888,5 @@
 
         updateUI(defaultConfig);
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a0dc758a5b831c5',t:'MTc2MzUzNTA4Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a0dda1f543d31c5',t:'MTc2MzUzNTg1MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
