@@ -1350,6 +1350,28 @@
             
             // Primera fila: Tipo y Monto Solicitado
             if (rows[0]) {
+                const cells = rows[0].cells;
+                // Tipo de Préstamo
+                if (cells[0] && cells[1]) {
+                    if (!printConfig.show_loan_type) {
+                        cells[0].classList.add('print-hide');
+                        cells[1].classList.add('print-hide');
+                    } else {
+                        cells[0].classList.remove('print-hide');
+                        cells[1].classList.remove('print-hide');
+                    }
+                }
+                // Monto Solicitado
+                if (cells[2] && cells[3]) {
+                    if (!printConfig.show_loan_amount) {
+                        cells[2].classList.add('print-hide');
+                        cells[3].classList.add('print-hide');
+                    } else {
+                        cells[2].classList.remove('print-hide');
+                        cells[3].classList.remove('print-hide');
+                    }
+                }
+                // Ocultar fila si todas las celdas están ocultas
                 if (!printConfig.show_loan_type && !printConfig.show_loan_amount) {
                     rows[0].classList.add('print-hide');
                 } else {
@@ -1359,6 +1381,28 @@
 
             // Segunda fila: Prima y Monto a Financiar
             if (rows[1]) {
+                const cells = rows[1].cells;
+                // Prima
+                if (cells[0] && cells[1]) {
+                    if (!printConfig.show_down_payment) {
+                        cells[0].classList.add('print-hide');
+                        cells[1].classList.add('print-hide');
+                    } else {
+                        cells[0].classList.remove('print-hide');
+                        cells[1].classList.remove('print-hide');
+                    }
+                }
+                // Monto a Financiar
+                if (cells[2] && cells[3]) {
+                    if (!printConfig.show_financed_amount) {
+                        cells[2].classList.add('print-hide');
+                        cells[3].classList.add('print-hide');
+                    } else {
+                        cells[2].classList.remove('print-hide');
+                        cells[3].classList.remove('print-hide');
+                    }
+                }
+                // Ocultar fila si todas las celdas están ocultas
                 if (!printConfig.show_down_payment && !printConfig.show_financed_amount) {
                     rows[1].classList.add('print-hide');
                 } else {
@@ -1368,6 +1412,28 @@
 
             // Tercera fila: Tasa de Interés y Cuota
             if (rows[2]) {
+                const cells = rows[2].cells;
+                // Tasa de Interés
+                if (cells[0] && cells[1]) {
+                    if (!printConfig.show_interest_rate) {
+                        cells[0].classList.add('print-hide');
+                        cells[1].classList.add('print-hide');
+                    } else {
+                        cells[0].classList.remove('print-hide');
+                        cells[1].classList.remove('print-hide');
+                    }
+                }
+                // Cuota Mensual
+                if (cells[2] && cells[3]) {
+                    if (!printConfig.show_monthly_payment) {
+                        cells[2].classList.add('print-hide');
+                        cells[3].classList.add('print-hide');
+                    } else {
+                        cells[2].classList.remove('print-hide');
+                        cells[3].classList.remove('print-hide');
+                    }
+                }
+                // Ocultar fila si todas las celdas están ocultas
                 if (!printConfig.show_interest_rate && !printConfig.show_monthly_payment) {
                     rows[2].classList.add('print-hide');
                 } else {
@@ -1377,6 +1443,28 @@
 
             // Cuarta fila: Total de Intereses y Total a Pagar
             if (rows[3]) {
+                const cells = rows[3].cells;
+                // Total de Intereses
+                if (cells[0] && cells[1]) {
+                    if (!printConfig.show_total_interest) {
+                        cells[0].classList.add('print-hide');
+                        cells[1].classList.add('print-hide');
+                    } else {
+                        cells[0].classList.remove('print-hide');
+                        cells[1].classList.remove('print-hide');
+                    }
+                }
+                // Total a Pagar
+                if (cells[2] && cells[3]) {
+                    if (!printConfig.show_total_amount) {
+                        cells[2].classList.add('print-hide');
+                        cells[3].classList.add('print-hide');
+                    } else {
+                        cells[2].classList.remove('print-hide');
+                        cells[3].classList.remove('print-hide');
+                    }
+                }
+                // Ocultar fila si todas las celdas están ocultas
                 if (!printConfig.show_total_interest && !printConfig.show_total_amount) {
                     rows[3].classList.add('print-hide');
                 } else {
@@ -1446,7 +1534,7 @@
                 twLink.className = 'social-link';
                 twLink.target = '_blank';
                 twLink.rel = 'noopener noreferrer';
-                twLink.innerHTML = '<span>🐦</span>';
+                twLink.innerHTML = '<span>��</span>';
                 socialLinksContainer.appendChild(twLink);
             }
         }
@@ -1657,7 +1745,7 @@
                 const interestPerPayment = totalInterest / payments;
 
                 for (let i = 1; i <= payments; i++) {
-                    // Si es el último pago, se incluye el principal
+                    // Si es el ��ltimo pago, se incluye el principal
                     if (i === payments) {
                         schedule.push({
                             number: i,
@@ -1886,5 +1974,5 @@
 
         updateUI(defaultConfig);
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a0dea3d609631c5',t:'MTc2MzUzNjUxMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a0df31130d631c5',t:'MTc2MzUzNjg3My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
