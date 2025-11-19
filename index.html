@@ -813,10 +813,10 @@
       </div>
      </div>
     </div>
+    <div style="margin-bottom: 1.5rem;"><button class="btn btn-secondary" onclick="openPrintSettings()" style="width: 100%;"> ⚙️ Configurar Reporte PDF </button>
+    </div>
     <div class="step-content active" id="step1">
      <h2 style="margin-bottom: 1.5rem; color: #667eea;">Paso 1: Datos del Cliente</h2>
-     <div style="margin-bottom: 1.5rem;"><button class="btn btn-secondary" onclick="openPrintSettings()" style="width: 100%;"> ⚙️ Configurar Reporte PDF </button>
-     </div>
      <div class="form-group"><label for="clientName">Nombre Completo</label> <input type="text" id="clientName" placeholder="Ingrese nombre completo">
      </div>
      <div class="form-group"><label for="clientPhone">Teléfono</label> <input type="tel" id="clientPhone" placeholder="+504 0000-0000">
@@ -868,21 +868,21 @@
       <div class="print-date" id="printDate"></div>
      </div>
      <h2 style="margin-bottom: 1.5rem; color: #667eea;">Resumen del Préstamo</h2>
-     <div class="info-section">
-      <div class="info-box">
+     <div class="info-section" id="infoSection">
+      <div class="info-box" id="clientInfoBox">
        <h3>Información del Cliente</h3>
-       <div class="info-row"><span class="info-label">Nombre:</span> <span class="info-value" id="resultClientName"></span>
+       <div class="info-row" id="clientNameRow"><span class="info-label">Nombre:</span> <span class="info-value" id="resultClientName"></span>
        </div>
-       <div class="info-row"><span class="info-label">Teléfono:</span> <span class="info-value" id="resultClientPhone"></span>
+       <div class="info-row" id="clientPhoneRow"><span class="info-label">Teléfono:</span> <span class="info-value" id="resultClientPhone"></span>
        </div>
-       <div class="info-row"><span class="info-label">Dirección:</span> <span class="info-value" id="resultClientAddress"></span>
+       <div class="info-row" id="clientAddressRow"><span class="info-label">Dirección:</span> <span class="info-value" id="resultClientAddress"></span>
        </div>
       </div>
-      <div class="info-box">
+      <div class="info-box" id="managerInfoBox">
        <h3>Información del Gestor</h3>
-       <div class="info-row"><span class="info-label">Nombre:</span> <span class="info-value" id="resultManagerName"></span>
+       <div class="info-row" id="managerNameRow"><span class="info-label">Nombre:</span> <span class="info-value" id="resultManagerName"></span>
        </div>
-       <div class="info-row"><span class="info-label">Teléfono:</span> <span class="info-value" id="resultManagerPhone"></span>
+       <div class="info-row" id="managerPhoneRow"><span class="info-label">Teléfono:</span> <span class="info-value" id="resultManagerPhone"></span>
        </div>
       </div>
      </div>
@@ -1833,23 +1833,62 @@
         }
 
         function displayResults(loanType, loanAmount, downPayment, financedAmount, interestRate, rateType, interestType, totalInterest, totalAmount, monthlyPayment, paymentSchedule) {
-            const clientName = document.getElementById('clientName').value.trim() || 'No especificado';
-            const clientPhone = document.getElementById('clientPhone').value.trim() || 'No especificado';
-            const clientAddress = document.getElementById('clientAddress').value.trim() || 'No especificado';
-            const managerName = document.getElementById('managerName').value.trim() || 'No especificado';
-            const managerPhone = document.getElementById('managerPhone').value.trim() || 'No especificado';
+            const clientName = document.getElementById('clientName').value.trim();
+            const clientPhone = document.getElementById('clientPhone').value.trim();
+            const clientAddress = document.getElementById('clientAddress').value.trim();
+            const managerName = document.getElementById('managerName').value.trim();
+            const managerPhone = document.getElementById('managerPhone').value.trim();
 
-            document.getElementById('resultClientName').textContent = clientName;
-            document.getElementById('resultClientPhone').textContent = clientPhone;
-            document.getElementById('resultClientAddress').textContent = clientAddress;
-            document.getElementById('resultManagerName').textContent = managerName;
-            document.getElementById('resultManagerPhone').textContent = managerPhone;
+            // Mostrar u ocultar información del cliente
+            const hasClientInfo = clientName || clientPhone || clientAddress;
+            const clientInfoBox = document.getElementById('clientInfoBox');
+            
+            if (hasClientInfo) {
+                clientInfoBox.style.display = 'block';
+                
+                // Mostrar/ocultar cada campo individualmente
+                document.getElementById('clientNameRow').style.display = clientName ? 'flex' : 'none';
+                document.getElementById('clientPhoneRow').style.display = clientPhone ? 'flex' : 'none';
+                document.getElementById('clientAddressRow').style.display = clientAddress ? 'flex' : 'none';
+                
+                document.getElementById('resultClientName').textContent = clientName || 'No especificado';
+                document.getElementById('resultClientPhone').textContent = clientPhone || 'No especificado';
+                document.getElementById('resultClientAddress').textContent = clientAddress || 'No especificado';
+                
+                document.getElementById('resultClientNameTable').textContent = clientName || 'No especificado';
+                document.getElementById('resultClientPhoneTable').textContent = clientPhone || 'No especificado';
+                document.getElementById('resultClientAddressTable').textContent = clientAddress || 'No especificado';
+            } else {
+                clientInfoBox.style.display = 'none';
+            }
 
-            document.getElementById('resultClientNameTable').textContent = clientName;
-            document.getElementById('resultClientPhoneTable').textContent = clientPhone;
-            document.getElementById('resultClientAddressTable').textContent = clientAddress;
-            document.getElementById('resultManagerNameTable').textContent = managerName;
-            document.getElementById('resultManagerPhoneTable').textContent = managerPhone;
+            // Mostrar u ocultar información del gestor
+            const hasManagerInfo = managerName || managerPhone;
+            const managerInfoBox = document.getElementById('managerInfoBox');
+            
+            if (hasManagerInfo) {
+                managerInfoBox.style.display = 'block';
+                
+                // Mostrar/ocultar cada campo individualmente
+                document.getElementById('managerNameRow').style.display = managerName ? 'flex' : 'none';
+                document.getElementById('managerPhoneRow').style.display = managerPhone ? 'flex' : 'none';
+                
+                document.getElementById('resultManagerName').textContent = managerName || 'No especificado';
+                document.getElementById('resultManagerPhone').textContent = managerPhone || 'No especificado';
+                
+                document.getElementById('resultManagerNameTable').textContent = managerName || 'No especificado';
+                document.getElementById('resultManagerPhoneTable').textContent = managerPhone || 'No especificado';
+            } else {
+                managerInfoBox.style.display = 'none';
+            }
+
+            // Ocultar toda la sección info-section si no hay datos de cliente ni gestor
+            const infoSection = document.getElementById('infoSection');
+            if (!hasClientInfo && !hasManagerInfo) {
+                infoSection.style.display = 'none';
+            } else {
+                infoSection.style.display = 'grid';
+            }
 
             const loanTypeText = loanType === 'amortizado' ? 'Amortizado' : 'Abierto';
             const rateTypeText = {
@@ -1974,5 +2013,5 @@
 
         updateUI(defaultConfig);
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a0df31130d631c5',t:'MTc2MzUzNjg3My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a0dfd69a62131c5',t:'MTc2MzUzNzI5Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
