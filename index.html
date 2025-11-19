@@ -1888,10 +1888,25 @@
             
             if (!hasClientInfo && !hasManagerInfo) {
                 infoSection.style.display = 'none';
-                infoTable.style.display = 'none';
+                if (infoTable) {
+                    infoTable.style.display = 'none';
+                }
             } else {
                 infoSection.style.display = 'grid';
-                infoTable.style.display = 'table';
+                if (infoTable) {
+                    infoTable.style.display = 'table';
+                }
+            }
+            
+            // También ocultar el encabezado si no hay información
+            const summaryHeading = document.querySelector('#resultSection h2');
+            if (summaryHeading) {
+                if (!hasClientInfo && !hasManagerInfo) {
+                    // Mantener el encabezado visible pero sin margen extra
+                    summaryHeading.style.marginBottom = '1.5rem';
+                } else {
+                    summaryHeading.style.marginBottom = '1.5rem';
+                }
             }
 
             const loanTypeText = loanType === 'amortizado' ? 'Amortizado' : 'Abierto';
@@ -2017,5 +2032,5 @@
 
         updateUI(defaultConfig);
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a0e0900746a31c5',t:'MTc2MzUzNzc3MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a0e17f1e10531c5',t:'MTc2MzUzODM4My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
